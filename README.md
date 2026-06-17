@@ -164,19 +164,13 @@ the testing were mine; Claude didn't make any of the design calls. two specific 
 **1. search_listings.** gave it the Tool 1 block from planning.md — the param table
 (description/size/max_price + the note that sizes are messy free-text), the return spec, and
 the failure mode (return `[]`, never raise). it produced a filter thenscore function using
-`load_listings()`. i changed it to weight title/style_tag matches higher than description
-matches (2× vs 1×) so a real graphic tee beats something that just says "graphic" in its
-blurb, added a stopword list, and moved the price/size stripping into the parser so `"$30"`
-couldn't match tokens like `"501"`. tested all three filters on real queries before trusting it.
+`load_listings()`.
 
 **2. the planning loop (run_agent).** gave it the Planning Loop pseudocode + State Management
 section + the ascii architecture diagram (the one showing the single early-exit off
 search_listings). it produced the 7-step run_agent writing into the session dict. i reviewed
 it for my branch — it *had* to return early on empty results and not call all
-three tools unconditionally. i also slotted the check_price call in as a non-blocking step
-and rewrote the error message to actually name the size/price instead of a generic "no
-results." confirmed `selected_item is search_results[0]` to make sure state passed by
-reference and nothing was re-derived.
+three tools unconditionally.
 
 ---
 
